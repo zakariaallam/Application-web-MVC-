@@ -1,30 +1,74 @@
 <?php
 namespace App\models;
+
+use App\core\DataBase;
 use PDO;
+
 class User {
-    private PDO $pdo;
-    private string $firstName;
-    private string $lastName;
+    private int $id;
+    private string $firstname;
+    private string $lastname;
     private string $email;
     private string $password;
 
-
-    public function __construct(string $firstName, string $lastName , string $email, string $password)
-    {
-        $this->firstName = $firstName;
-        $this->lastName = $lastName;
-        $this->email = $email;
-        $this->password = $password;
-        $this->pdo = new Pdo("pgsql:host=postgres;dbname=atelier_MVC","root","root123");
-    }
-
     public function save(){
-        $sql = "INSERT INTO users (first_name,last_name,email,password) VALUES (:first_name,:last_name,:email,:password)";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(":first_name",$this->firstName);
-        $stmt->bindParam(":last_name",$this->lastName);
+        $sql = "INSERT INTO users (firstname,lastname,email,password) VALUES (:firstname,:lastname,:email,:password)";
+        $stmt = DataBase::Connextion()->prepare($sql);
+        $stmt->bindParam(":firstname",$this->firstname);
+        $stmt->bindParam(":lastname",$this->lastname);
         $stmt->bindParam(":email",$this->email);
         $stmt->bindParam(":password",$this->password);
         $stmt->execute();
+    }
+
+    public function getByEmail(){
+        $sql = "SELECT * FROM users WHERE email=:email";
+        $stmt = DataBase::Connextion()->prepare($sql);
+        $stmt->bindParam(":email",$this->email);
+        $stmt->execute();
+        $stmt->setFetchMode(PDO::FETCH_CLASS, User::class);
+         return $stmt->fetch();
+
+    }
+
+    public function getId(): int{
+        return $this->id;
+    }
+
+    public function setId($id){
+        $this->id = $id;
+        return $this;
+    }
+    public function getFirstName(): string{
+        return $this->firstname;
+    }
+
+    public function setFirstName($firstName){
+        $this->firstname = $firstName;
+        return $this;
+    }
+    public function getLastName(): string{
+        return $this->lastname;
+    }
+
+    public function setLastName($lastName){
+        $this->lastname = $lastName;
+        return $this;
+    }
+    public function getEmail(): string{
+        return $this->email;
+    }
+
+    public function setEmail($email){
+        $this->email = $email;
+        return $this;
+    }
+    public function getPassword(): string{
+        return $this->password;
+    }
+
+    public function setPassword($password){
+        $this->password = $password;
+        return $this;
     }
 }

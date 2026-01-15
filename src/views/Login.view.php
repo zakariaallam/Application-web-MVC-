@@ -1,6 +1,8 @@
 <?php
 if(isset($success)){
   echo $success;
+}else{
+  echo $error;
 }
 ?>
 <!DOCTYPE html>
